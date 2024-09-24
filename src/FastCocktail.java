@@ -15,7 +15,7 @@ public class FastCocktail extends BaseCocktail {
     }
 
     private void updateRecipe(Ingredient vodka) {
-        setRecipe(getRecipe() + ", " + vodka.toRecipeFormat());
+        setRecipe(super.getRecipe() + ", " + vodka.toRecipeFormat());
     }
 
     private void calculateStrength() {

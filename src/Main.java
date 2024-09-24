@@ -1,21 +1,39 @@
+import mylogging.ExcMsgLog;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Main {
     public static void main(String[] args) {
-        Ingredient ice = new Ingredient("лёд", 0, 250);
-        Ingredient vodka = new Ingredient("водка", 0.4, 100);
-        Ingredient juice = new Ingredient("сок", 0, 200);
-        Ingredient tequila = new Ingredient("текила", 0.3, 100);
 
-        BaseCocktail cocktail = new BaseCocktail(ice);
+        MyArrayList<Integer> listik = new MyArrayList<>();
 
-        System.out.println(cocktail.cookInstruction());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
-        FastCocktail cocktail1 = new FastCocktail(ice, vodka);
+        try {
 
-        System.out.println(cocktail1.getStrength());
+            ExcMsgLog log = new ExcMsgLog(3);
 
-        FancyCocktail f3 = new FancyCocktail(ice, vodka, juice, tequila);
-        System.out.println(f3.getRecipe());
-        System.out.println(f3.cookInstruction());
-        System.out.println(f3.getStrength());
+            log.write("Start programm: " + LocalDateTime.now().format(formatter));
+
+            listik.add(5, log);
+            listik.add(6, log);
+            listik.add(7, log);
+            listik.add(8, log);
+
+            listik.remove(3, log);
+            listik.remove(1, log);
+
+            listik.add(12, log);
+
+            listik.logInfo(log);
+
+            log.write("Finish programm: " + LocalDateTime.now().format(formatter));
+
+        } catch (IOException e) {
+            System.out.println("problem");
+        }
+
     }
 }
