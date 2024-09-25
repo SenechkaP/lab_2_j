@@ -1,3 +1,5 @@
+package cocktails;
+
 public class FastCocktail extends BaseCocktail {
     private Ingredient vodka;
 

@@ -1,3 +1,5 @@
+package cocktails;
+
 public class FancyCocktail extends FastCocktail {
     private Ingredient juice;
     private Ingredient tequila;

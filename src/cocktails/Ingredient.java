@@ -1,3 +1,5 @@
+package cocktails;
+
 public class Ingredient {
     private String name;
     private double strength;

@@ -1,39 +1,48 @@
+import cocktails.BaseCocktail;
+import cocktails.FastCocktail;
+import cocktails.Ingredient;
 import mylogging.ExcMsgLog;
+import mystructures.MyArrayList;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Main {
-    public static void main(String[] args) {
+    static BaseCocktail generateFastCocktail() {
+        return new FastCocktail(
+                new Ingredient("ice", 0, (int) (Math.random() * 100)),
+                new Ingredient("vodka", 38.5, (int) (Math.random() * 200))
+        );
+    }
 
-        MyArrayList<Integer> listik = new MyArrayList<>();
-
+    public static void main(String[] args) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        int n = 0;  // номер лог файла
 
-        try {
+        /*
+        *      Эксперименты  для  ArrayList
+        *                   |
+        *                   V
+        * */
 
-            ExcMsgLog log = new ExcMsgLog(3);
+        MyArrayList listik = new MyArrayList();
 
-            log.write("Start programm: " + LocalDateTime.now().format(formatter));
+        for (int size = 10; n < 5; n++, size *= 10) {
+            listik.clear();
+            ExcMsgLog log = new ExcMsgLog(n);
+            log.writeFine("Start programm: " + LocalDateTime.now().format(formatter));
 
-            listik.add(5, log);
-            listik.add(6, log);
-            listik.add(7, log);
-            listik.add(8, log);
+            for (int j = 0; j < size; j++) {
+                listik.add(generateFastCocktail(), log);
+            }
 
-            listik.remove(3, log);
-            listik.remove(1, log);
-
-            listik.add(12, log);
+            for (int j = 0; j < (int) (size * 0.1); j++) {
+                listik.remove((int) (Math.random() * listik.size()), log);
+            }
 
             listik.logInfo(log);
-
-            log.write("Finish programm: " + LocalDateTime.now().format(formatter));
-
-        } catch (IOException e) {
-            System.out.println("problem");
+            log.writeFine("Finish programm: " + LocalDateTime.now().format(formatter));
         }
-
     }
 }

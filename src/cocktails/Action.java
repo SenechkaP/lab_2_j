@@ -1,3 +1,5 @@
+package cocktails;
+
 public enum Action {
     POUR("налить"),
     STIR("размешать"),

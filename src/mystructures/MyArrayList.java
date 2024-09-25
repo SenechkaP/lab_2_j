@@ -1,8 +1,11 @@
+package mystructures;
+
+import cocktails.BaseCocktail;
 import mylogging.ExcMsgLog;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class MyArrayList<T> extends ArrayList<T> {
+public class MyArrayList extends ArrayList<BaseCocktail> {
 
     private int id_of_obj = 0;
 
@@ -19,22 +22,22 @@ public class MyArrayList<T> extends ArrayList<T> {
         int size = array.size();
         array.sort(Comparator.naturalOrder());
         if (size % 2 == 0) {
-            return (float) (array.get((size - 1) / 2) + array.get(size - 1)) / 2;
+            return (float) (array.get((size - 1) / 2) + array.get(size / 2)) / 2;
         }
         return array.get(size / 2);
     }
 
     public void logInfo(ExcMsgLog log) {
-        log.writeLog("addTotalCount: " + add_total_count);
-        log.writeLog("addTotalTime: " + add_total_time);
-        log.writeLog("addMedianTime: " + getMedian(all_add_time));
+        log.writeInfo("addTotalCount: " + add_total_count);
+        log.writeInfo("addTotalTime: " + add_total_time);
+        log.writeInfo("addMedianTime: " + getMedian(all_add_time));
 
-        log.writeLog("removeTotalCount: " + remove_total_count);
-        log.writeLog("removeTotalTime: " + remove_total_time);
-        log.writeLog("removeMedianTime: " + getMedian(all_remove_time));
+        log.writeInfo("removeTotalCount: " + remove_total_count);
+        log.writeInfo("removeTotalTime: " + remove_total_time);
+        log.writeInfo("removeMedianTime: " + getMedian(all_remove_time));
     }
 
-    public void add(T element, ExcMsgLog log) {
+    public void add(BaseCocktail element, ExcMsgLog log) {
         long startTime = System.nanoTime();
         super.add(element);
         long endTime = System.nanoTime();
@@ -44,13 +47,17 @@ public class MyArrayList<T> extends ArrayList<T> {
         add_total_count += 1;
         all_add_time.add(operationTime);
 
-        log.writeLog("ADD " + " ID = " + id_of_obj + "  " + operationTime + " nanoseconds");
+        log.writeInfo("ADD " + " ID = " + id_of_obj + "  " + operationTime + " nanoseconds");
         id_of_obj += 1;
     }
 
     public void remove(int index, ExcMsgLog log) {
         long startTime = System.nanoTime();
-        super.remove(index);
+        try {
+            super.remove(index);
+        } catch (IndexOutOfBoundsException e) {
+            log.writeSevere(e.getMessage());
+        }
         id_of_obj -= 1;
         long endTime = System.nanoTime();
         long operationTime = endTime - startTime;
@@ -59,6 +66,16 @@ public class MyArrayList<T> extends ArrayList<T> {
         remove_total_count += 1;
         all_remove_time.add(operationTime);
 
-        log.writeLog("REMOVE " + " ID = " + index + "  " + operationTime + " nanoseconds");
+        log.writeInfo("REMOVE " + " ID = " + index + "  " + operationTime + " nanoseconds");
+    }
+
+    @Override
+    public void clear() {
+        id_of_obj = 0;
+        add_total_count = 0;
+        add_total_time = 0L;
+        remove_total_count = 0;
+        remove_total_time = 0L;
+        super.clear();
     }
 }

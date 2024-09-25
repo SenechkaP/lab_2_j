@@ -101,3 +101,7 @@ nb-configuration.xml
 ## Visual Studio Code
 ##############################
 .code-workspace
+
+
+err_log.txt.*
+src/mystructures/Some.java

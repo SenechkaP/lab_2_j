@@ -1,3 +1,5 @@
+package cocktails;
+
 public class BaseCocktail {
     private String recipe;
     private double strength;
