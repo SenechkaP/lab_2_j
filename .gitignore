@@ -103,5 +103,5 @@ nb-configuration.xml
 .code-workspace
 
 
-err_log.txt.*
+msg_log.txt.*
 src/mystructures/Some.java
