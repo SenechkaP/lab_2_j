@@ -3,7 +3,6 @@ package mystructures;
 import cocktails.BaseCocktail;
 import mylogging.ExcMsgLog;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class MyArrayList extends ArrayList<BaseCocktail> {
 
@@ -18,23 +17,14 @@ public class MyArrayList extends ArrayList<BaseCocktail> {
     private ArrayList<Long> all_add_time = new ArrayList<>();
     private ArrayList<Long> all_remove_time = new ArrayList<>();
 
-    private float getMedian(ArrayList<Long> array) {
-        int size = array.size();
-        array.sort(Comparator.naturalOrder());
-        if (size % 2 == 0) {
-            return (float) (array.get((size - 1) / 2) + array.get(size / 2)) / 2;
-        }
-        return array.get(size / 2);
-    }
-
     public void logInfo(ExcMsgLog log) {
         log.writeInfo("addTotalCount: " + add_total_count);
         log.writeInfo("addTotalTime: " + add_total_time);
-        log.writeInfo("addMedianTime: " + getMedian(all_add_time));
+        log.writeInfo("addMedianTime: " + Calculations.getMedian(all_add_time));
 
         log.writeInfo("removeTotalCount: " + remove_total_count);
         log.writeInfo("removeTotalTime: " + remove_total_time);
-        log.writeInfo("removeMedianTime: " + getMedian(all_remove_time));
+        log.writeInfo("removeMedianTime: " + Calculations.getMedian(all_remove_time));
     }
 
     public void add(BaseCocktail element, ExcMsgLog log) {
@@ -67,15 +57,5 @@ public class MyArrayList extends ArrayList<BaseCocktail> {
         all_remove_time.add(operationTime);
 
         log.writeInfo("REMOVE " + " ID = " + index + "  " + operationTime + " nanoseconds");
-    }
-
-    @Override
-    public void clear() {
-        id_of_obj = 0;
-        add_total_count = 0;
-        add_total_time = 0L;
-        remove_total_count = 0;
-        remove_total_time = 0L;
-        super.clear();
     }
 }

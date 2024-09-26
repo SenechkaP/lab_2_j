@@ -2,7 +2,9 @@ import cocktails.BaseCocktail;
 import cocktails.FastCocktail;
 import cocktails.Ingredient;
 import mylogging.ExcMsgLog;
+import mystructures.Calculations;
 import mystructures.MyArrayList;
+import mystructures.MyHashMap;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -26,10 +28,10 @@ public class Main {
         *                   V
         * */
 
-        MyArrayList listik = new MyArrayList();
+        MyArrayList listik;
 
         for (int size = 10; n < 5; n++, size *= 10) {
-            listik.clear();
+            listik = new MyArrayList();
             ExcMsgLog log = new ExcMsgLog(n);
             log.writeFine("Start programm: " + LocalDateTime.now().format(formatter));
 
@@ -42,6 +44,33 @@ public class Main {
             }
 
             listik.logInfo(log);
+            log.writeInfo("Amount of exceptions: " + log.getException_count());
+            log.writeFine("Finish programm: " + LocalDateTime.now().format(formatter));
+        }
+
+        /*
+         *      Эксперименты  для  HashMap
+         *                   |
+         *                   V
+         * */
+
+        MyHashMap hashik;
+
+        for (int size = 10; n < 10; n++, size *= 10) {
+            hashik = new MyHashMap();
+            ExcMsgLog log = new ExcMsgLog(n);
+            log.writeFine("Start programm: " + LocalDateTime.now().format(formatter));
+
+            for (int j = 0; j < size; j++) {
+                hashik.put(generateFastCocktail(), log);
+            }
+
+            for (int j = 0; j < (int) (size * 0.1); j++) {
+                hashik.replace((int) (Math.random() * hashik.size()), generateFastCocktail(), log);
+            }
+
+            hashik.logInfo(log);
+            log.writeInfo("Amount of exceptions: " + log.getException_count());
             log.writeFine("Finish programm: " + LocalDateTime.now().format(formatter));
         }
     }
