@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Arseniy",
+    "password_hash": "$2a$10$Duc4SWG.BDqhX7mSxAYTtu6f/02qIqCiZbWx8FMNbK6LBYrMz9yti",
+    "right": "root"
+  },
+  {
+    "name": "Chris",
+    "password_hash": "$2a$10$73nbxU9oeYCZzbUK..x/aO0QCntUuWB6K42TV9ZyEjclaPEWx2dJK",
+    "right": "user"
+  }
+]

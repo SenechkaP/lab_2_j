@@ -105,3 +105,4 @@ nb-configuration.xml
 
 msg_log.txt.*
 src/mystructures/Some.java
+database.txt
