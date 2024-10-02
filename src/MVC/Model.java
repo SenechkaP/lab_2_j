@@ -24,6 +24,10 @@ public class Model {
         }
     }
 
+    public int getSize() {
+        return id_to_add;
+    }
+
     public JSONObject findUser(String userName) throws IOException, ParseException {
         Object o = new JSONParser().parse(new FileReader("src/users.json"));
         JSONArray jsonArray = (JSONArray) o;
@@ -43,9 +47,9 @@ public class Model {
         return Files.readAllLines(Paths.get("database.txt"));
     }
 
-    public boolean addCocktail(BaseCocktail cocktail) throws IOException {
+    public String addCocktail(BaseCocktail cocktail) throws IOException {
         if (cocktail == null) {
-            return false;
+            return null;
         }
 
         FileOutputStream out = new FileOutputStream("database.txt", true);
@@ -55,6 +59,6 @@ public class Model {
         out2.close();
         id_to_add += 1;
 
-        return true;
+        return str;
     }
 }

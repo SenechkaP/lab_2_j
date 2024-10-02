@@ -51,6 +51,15 @@ public class Controller {
         return user;
     }
 
+    private List<String> getLines() {
+        try {
+            return model.readLines();
+        } catch (IOException e) {
+            view.displayText("Что-то пошло не так...\n\n");
+            return null;
+        }
+    }
+
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
@@ -89,21 +98,14 @@ public class Controller {
                 view.displayText("Номер команды - целое число! Попробуйте ещё раз.\n\n");
             }
 
+            List<String> lines = getLines();
+
             switch (command) {
                 case 0:
                     view.displayText("Программа завершена, данные сохранены.");
                     running = false;
                     break;
-                case 1:
-                    List<String> lines;
-
-                    try {
-                        lines = model.readLines();
-                    } catch (IOException e) {
-                        view.displayText("Что-то пошло не так...\n\n");
-                        break;
-                    }
-
+                case 1: {
                     for (String line : lines) {
                         String[] cocktail = line.split(";");
                         view.displayText("ID = " + cocktail[0] + "  type = " + cocktail[1] + ": " + cocktail[2] + "\n");
@@ -111,7 +113,8 @@ public class Controller {
                     view.displayText("\n");
 
                     break;
-                case 2:
+                }
+                case 2: {
                     BaseCocktail cocktail = null;
                     int variant = 1;
 
@@ -162,19 +165,46 @@ public class Controller {
                         break;
                     }
 
-                    boolean added = false;
+                    String added_str = null;
 
                     try {
-                        added = model.addCocktail(cocktail);
+                        added_str = model.addCocktail(cocktail);
+                        lines.add(added_str);
                     } catch (IOException e) {
                         view.displayText("Произошла ошибка, попробуйте ещё раз.\n\n");
                     }
 
-                    if (added) {
+                    if (added_str == null) {
                         view.displayText("Запись о коктейле успешно добавлена.\n\n");
                     }
 
                     break;
+                }
+                case 3: {
+                    view.displayText("Введите ID элемента, информацию о котором вы хотите обновить: ");
+
+                    int id;
+
+                    try {
+                        id = Integer.parseInt(view.getLine());
+                        if (id < 0 || id >= model.getSize()) {
+                            throw new IllegalArgumentException();
+                        }
+                    } catch (NumberFormatException e) {
+                        view.displayText("ID - целое число! Попробуйте ещё раз.\n\n");
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        view.displayText("Нет такого ID. Попробуйте сначала вывести все записи и посмотреть, какие ID доступны.\n\n");
+                        break;
+                    }
+
+                    String cocktailType = lines.get(id).split(";")[1];
+                    // TODO parse line to get components and change them
+
+                    view.displayText("");
+
+                    break;
+                }
                 default:
                     view.displayText("Нет такой команды.\n\n");
             }
