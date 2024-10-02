@@ -104,5 +104,5 @@ nb-configuration.xml
 
 
 msg_log.txt.*
-src/mystructures/Some.java
+src/Some.java
 database.txt

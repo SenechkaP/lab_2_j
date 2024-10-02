@@ -2,9 +2,11 @@ package MVC;
 
 import cocktails.BaseCocktail;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Controller {
     private Model model;
@@ -30,7 +32,8 @@ public class Controller {
         }
     }
 
-    private JSONObject getUser() {
+
+    private JSONObject getUser() throws IOException, ParseException {
         JSONObject user;
         while (true) {
             view.displayText("Введите имя пользователя: ");
@@ -61,7 +64,12 @@ public class Controller {
             return;
         }
 
-        JSONObject user = getUser();
+        JSONObject user = null;
+        try {
+            user = getUser();
+        } catch (IOException | ParseException e) {
+            view.displayText("Что-то пошло не так...\n\n");
+        }
 
         checkPassword(user);
 
@@ -85,6 +93,23 @@ public class Controller {
                 case 0:
                     view.displayText("Программа завершена, данные сохранены.");
                     running = false;
+                    break;
+                case 1:
+                    List<String> lines;
+
+                    try {
+                        lines = model.readLines();
+                    } catch (IOException e) {
+                        view.displayText("Что-то пошло не так...\n\n");
+                        break;
+                    }
+
+                    for (String line : lines) {
+                        String[] cocktail = line.split(";");
+                        view.displayText("ID = " + cocktail[0] + "  type = " + cocktail[1] + ": " + cocktail[2] + "\n");
+                    }
+                    view.displayText("\n");
+
                     break;
                 case 2:
                     BaseCocktail cocktail = null;
@@ -137,12 +162,18 @@ public class Controller {
                         break;
                     }
 
-                    boolean added = model.addCocktail(cocktail);
-                    if (added) {
-                        view.displayText("Запись о коктейле успешно добавлена.\n\n");
-                    } else {
+                    boolean added = false;
+
+                    try {
+                        added = model.addCocktail(cocktail);
+                    } catch (IOException e) {
                         view.displayText("Произошла ошибка, попробуйте ещё раз.\n\n");
                     }
+
+                    if (added) {
+                        view.displayText("Запись о коктейле успешно добавлена.\n\n");
+                    }
+
                     break;
                 default:
                     view.displayText("Нет такой команды.\n\n");

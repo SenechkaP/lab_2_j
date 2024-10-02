@@ -11,13 +11,8 @@ public class Ingredient {
         this.amount = amount;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s грамм %s (крепость = %s)", amount, name, strength);
-    }
-
     public String toRecipeFormat() {
-        return String.format("%s грамм %s", amount, name);
+        return String.format("%s грамм %s (крепость = %s)", amount, name, strength);
     }
 
     public int getAmount() {
