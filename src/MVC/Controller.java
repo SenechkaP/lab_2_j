@@ -1,6 +1,8 @@
 package MVC;
 
 import cocktails.BaseCocktail;
+import cocktails.FancyCocktail;
+import cocktails.FastCocktail;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.mindrot.jbcrypt.BCrypt;
@@ -198,28 +200,113 @@ public class Controller {
                         break;
                     }
 
-                    // TODO parse line to get components and change them
-
                     String[] lineParts = lines.get(id).split(";");
                     String cocktailType = lineParts[1];
                     String[] ingredients = lineParts[2].split(",");  // size = 1 or 2 or 4
-//                    String[] ingredientParts = ingredients.sp
 
-                    BaseCocktail cocktail = null;
+                    String cocktailStr = "";
+                    view.displayText("Если вы не хотите менять какой-то из параметров какого-то ингредиента,\nто в таком случае введите любое отрицательное число\n\n");
 
                     switch (cocktailType) {
                         case "BaseCocktail": {
                             try {
                                 /*
-                                * ingredients[0].split(" "):
-                                * ["500", "грамм", "ice", "(крепость", "=", "0.0)"]
-                                * */
-                                view.displayText("Если вы не хотите менять какой-то из параметров какого-то ингредиента,\nто в таком случае введите любое отрицательное число\n\n");
-                                cocktail = view.inputBaseCocktail();
-                                if (cocktail.getTotalAmount() >= 0) {
-                                    int newAmount = Integer.parseInt(ingredients[0].split(" ")[0]);
-                                    cocktail.setTotalAmount(newAmount);
+                                 * ingredients[0].split(" "):
+                                 * ["500", "грамм", "ice", "(крепость", "=", "0.0)"]
+                                 * */
+                                BaseCocktail cocktail = view.inputBaseCocktail();
+                                if (cocktail.getIceAmount() < 0) {
+                                    int newIceAmount = Integer.parseInt(ingredients[0].split(" ")[0]);
+                                    cocktail.setIceAmount(newIceAmount);
                                 }
+
+                                cocktailStr = id + ";" + cocktail.getClass().getSimpleName() + ";" + cocktail.getRecipe();
+                                break;
+                            } catch (NumberFormatException e) {
+                                view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
+                                break;
+                            }
+                        }
+                        case "FastCocktail": {
+                            try {
+                                /*
+                                 * ingredients[0].split(" "):
+                                 * ["230", "грамм", "ice", "(крепость", "=", "0.0)"]
+                                 * ingredients[1].split(" "):
+                                 * ["", "105", "грамм", "vodka", "(крепость", "=", "34.5)"]
+                                 * */
+
+                                FastCocktail fastCocktail = view.inputFastCocktail();
+                                if (fastCocktail.getIceAmount() < 0) {
+                                    int newIceAmount = Integer.parseInt(ingredients[0].split(" ")[0]);
+                                    fastCocktail.setIceAmount(newIceAmount);
+                                }
+                                if (fastCocktail.getVodkaAmount() < 0) {
+                                    int newVodkaAmount = Integer.parseInt(ingredients[1].split(" ")[1]);
+                                    fastCocktail.setVodkaAmount(newVodkaAmount);
+                                }
+                                if (fastCocktail.getVodkaStrength() < 0) {
+                                    String vodkaStrengthStr = ingredients[1].split(" ")[6];
+                                    vodkaStrengthStr = vodkaStrengthStr.substring(0, vodkaStrengthStr.length() - 1);
+                                    double newVodkaStrength = Double.parseDouble(vodkaStrengthStr);
+                                    fastCocktail.setVodkaStrength(newVodkaStrength);
+                                }
+
+                                cocktailStr = id + ";" + fastCocktail.getClass().getSimpleName() + ";" + fastCocktail.getRecipe();
+                                //cocktail = fastCocktail;
+
+                                break;
+                            } catch (NumberFormatException e) {
+                                view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
+                                break;
+                            }
+                        }
+                        case "FancyCocktail": {
+                            try {
+                                /*
+                                 * ingredients[0].split(" "):
+                                 * ["230", "грамм", "ice", "(крепость", "=", "0.0)"]
+                                 * ingredients[1].split(" "):
+                                 * ["", "105", "грамм", "vodka", "(крепость", "=", "34.5)"]
+                                 * ingredients[2].split(" "):
+                                 * ["", "456", "грамм", "juice", "(крепость", "=", "0.0)"]
+                                 * ingredients[3].split(" "):
+                                 * ["", "105", "грамм", "tequila", "(крепость", "=", "30.5)"]
+                                 * */
+
+                                FancyCocktail fancyCocktail = view.inputFancyCocktail();
+                                if (fancyCocktail.getIceAmount() < 0) {
+                                    int newIceAmount = Integer.parseInt(ingredients[0].split(" ")[0]);
+                                    fancyCocktail.setIceAmount(newIceAmount);
+                                }
+                                if (fancyCocktail.getVodkaAmount() < 0) {
+                                    int newVodkaAmount = Integer.parseInt(ingredients[1].split(" ")[1]);
+                                    fancyCocktail.setVodkaAmount(newVodkaAmount);
+                                }
+                                if (fancyCocktail.getVodkaStrength() < 0) {
+                                    String vodkaStrengthStr = ingredients[1].split(" ")[6];
+                                    vodkaStrengthStr = vodkaStrengthStr.substring(0, vodkaStrengthStr.length() - 1);
+                                    double newVodkaStrength = Double.parseDouble(vodkaStrengthStr);
+                                    fancyCocktail.setVodkaStrength(newVodkaStrength);
+                                }
+                                if (fancyCocktail.getJuiceAmount() < 0) {
+                                    int newJuiceAmount = Integer.parseInt(ingredients[2].split(" ")[2]);
+                                    fancyCocktail.setJuiceAmount(newJuiceAmount);
+                                }
+                                if (fancyCocktail.getTequilaAmount() < 0) {
+                                    int newTequilaAmount = Integer.parseInt(ingredients[3].split(" ")[2]);
+                                    fancyCocktail.setTequilaAmount(newTequilaAmount);
+                                }
+                                if (fancyCocktail.getTequilaStrength() < 0) {
+                                    String tequilaStrengthStr = ingredients[3].split(" ")[6];
+                                    tequilaStrengthStr = tequilaStrengthStr.substring(0, tequilaStrengthStr.length() - 1);
+                                    double newTequilaStrength = Double.parseDouble(tequilaStrengthStr);
+                                    fancyCocktail.setTequilaStrength(newTequilaStrength);
+                                }
+
+                                cocktailStr = id + ";" + fancyCocktail.getClass().getSimpleName() + ";" + fancyCocktail.getRecipe();
+                                //cocktail = fastCocktail;
+
                                 break;
                             } catch (NumberFormatException e) {
                                 view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
@@ -228,7 +315,7 @@ public class Controller {
                         }
                     }
 
-                    String cocktailStr = id + ";" + cocktail.getClass().getSimpleName() + ";" + cocktail.getRecipe();
+//                    String cocktailStr = id + ";" + cocktail.getClass().getSimpleName() + ";" + cocktail.getRecipe();
 
                     lines.set(id, cocktailStr);
                     try {

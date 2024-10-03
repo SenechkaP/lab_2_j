@@ -1,11 +1,13 @@
 package cocktails;
 
 public class BaseCocktail {
+    private Ingredient ice;
     private String recipe;
     private double strength;
     private int totalAmount;
 
     public BaseCocktail(Ingredient ice) {
+        this.ice = ice;
         this.recipe = ice.toRecipeFormat();
         this.strength = 0;
         this.totalAmount = ice.getAmount();
@@ -37,5 +39,15 @@ public class BaseCocktail {
 
     public double getStrength() {
         return strength;
+    }
+
+    public int getIceAmount() {
+        return ice.getAmount();
+    }
+
+    public void setIceAmount(int amount) {
+        ice.setAmount(amount);
+        setTotalAmount(amount);
+        setRecipe(ice.toRecipeFormat());
     }
 }

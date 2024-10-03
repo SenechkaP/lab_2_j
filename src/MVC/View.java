@@ -49,7 +49,7 @@ public class View {
                             Прочитать все записи о коктейлях......1
                             Добавить новую запись о коктейле......2
                             Обновить запись о коктейле............3
-                            Удалить запись о коктейле......... ...4
+                            Удалить запись о коктейле.............4
                             Включить режим отладки................5
                             Запустить автотесты...................6
                             """
@@ -76,7 +76,7 @@ public class View {
         return new BaseCocktail(new Ingredient("ice", 0, ice_grams));
     }
 
-    public BaseCocktail inputFastCocktail() {
+    public FastCocktail inputFastCocktail() {
         displayText("Введите целое число грамм льда: ");
         int ice_grams = Integer.parseInt(getLine());
         displayText("Введите целое число грамм водки: ");
@@ -89,7 +89,7 @@ public class View {
         );
     }
 
-    public BaseCocktail inputFancyCocktail() {
+    public FancyCocktail inputFancyCocktail() {
         displayText("Введите целое число грамм льда: ");
         int ice_grams = Integer.parseInt(getLine());
         displayText("Введите целое число грамм водки: ");

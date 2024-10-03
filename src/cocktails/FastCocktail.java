@@ -7,7 +7,7 @@ public class FastCocktail extends BaseCocktail {
         super(ice);
         this.vodka = vodka;
         setTotalAmount(getTotalAmount() + vodka.getAmount());
-        updateRecipe(vodka);
+        createRecipe(vodka);
         calculateStrength();
     }
 
@@ -16,7 +16,7 @@ public class FastCocktail extends BaseCocktail {
         return super.cookInstruction() + ", " + Action.POUR.getDescription() + " водку";
     }
 
-    private void updateRecipe(Ingredient vodka) {
+    private void createRecipe(Ingredient vodka) {
         setRecipe(super.getRecipe() + ", " + vodka.toRecipeFormat());
     }
 
@@ -29,7 +29,42 @@ public class FastCocktail extends BaseCocktail {
         return vodka.getAmount();
     }
 
+    public void setVodkaAmount(int amount) {
+        vodka.setAmount(amount);
+        setTotalAmount(getTotalAmount() + amount);
+        String recipe = getRecipe();
+        String[] recipeParts = recipe.split(",");
+        String[] vodkaParts = recipeParts[1].split(" ");
+        vodkaParts[1] = "" + amount;
+
+        StringBuilder newRecipe = new StringBuilder(recipeParts[0]);
+        newRecipe.append(",");
+        for (int i = 1; i < vodkaParts.length; i++) {
+            newRecipe.append(" ").append(vodkaParts[i]);
+        }
+
+        setRecipe(newRecipe.toString());
+        calculateStrength();
+    }
+
     public double getVodkaStrength() {
         return vodka.getStrength();
+    }
+
+    public void setVodkaStrength(double strength) {
+        vodka.setStrength(strength);
+        String recipe = getRecipe();
+        String[] recipeParts = recipe.split(",");
+        String[] vodkaParts = recipeParts[1].split(" ");
+        vodkaParts[6] = strength + ")";
+
+        StringBuilder newRecipe = new StringBuilder(recipeParts[0]);
+        newRecipe.append(",");
+        for (int i = 1; i < vodkaParts.length; i++) {
+            newRecipe.append(" ").append(vodkaParts[i]);
+        }
+
+        setRecipe(newRecipe.toString());
+        calculateStrength();
     }
 }

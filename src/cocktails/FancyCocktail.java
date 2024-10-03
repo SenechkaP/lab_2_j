@@ -8,7 +8,7 @@ public class FancyCocktail extends FastCocktail {
         super(ice, vodka);
         this.juice = juice;
         this.tequila = tequila;
-        updateRecipe(juice, tequila);
+        createRecipe(juice, tequila);
         setTotalAmount(getTotalAmount() + tequila.getAmount() + juice.getAmount());
         calculateStrength();
     }
@@ -20,7 +20,7 @@ public class FancyCocktail extends FastCocktail {
                 Action.SHAKE.getDescription();
     }
 
-    private void updateRecipe(Ingredient juice, Ingredient tequila) {
+    private void createRecipe(Ingredient juice, Ingredient tequila) {
         setRecipe(getRecipe() + ", " + juice.toRecipeFormat() + ", " + tequila.toRecipeFormat());
     }
 
@@ -33,11 +33,31 @@ public class FancyCocktail extends FastCocktail {
         return juice.getAmount();
     }
 
+    public void setJuiceAmount(int amount) {
+        juice.setAmount(amount);
+        setTotalAmount(getTotalAmount() + amount);
+        // TODO: write normal updating algorithm for new recipe for FancyCocktail
+        calculateStrength();
+    }
+
     public int getTequilaAmount() {
         return tequila.getAmount();
     }
 
+    public void setTequilaAmount(int amount) {
+        tequila.setAmount(amount);
+        setTotalAmount(getTotalAmount() + amount);
+        // TODO: write normal updating algorithm for new recipe for FancyCocktail
+        calculateStrength();
+    }
+
     public double getTequilaStrength() {
         return tequila.getStrength();
+    }
+
+    public void setTequilaStrength(double strength) {
+        tequila.setStrength(strength);
+        // TODO: write normal updating algorithm for new recipe for FancyCocktail
+        calculateStrength();
     }
 }
