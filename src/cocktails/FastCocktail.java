@@ -24,4 +24,12 @@ public class FastCocktail extends BaseCocktail {
         double newStrength = (vodka.getStrength() * vodka.getAmount()) / getTotalAmount();
         setStrength(newStrength);
     }
+
+    public int getVodkaAmount() {
+        return vodka.getAmount();
+    }
+
+    public double getVodkaStrength() {
+        return vodka.getStrength();
+    }
 }

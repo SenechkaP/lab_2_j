@@ -28,4 +28,16 @@ public class FancyCocktail extends FastCocktail {
         double newStrength = getStrength() + (tequila.getStrength() * tequila.getAmount()) / getTotalAmount();
         setStrength(newStrength);
     }
+
+    public int getJuiceAmount() {
+        return juice.getAmount();
+    }
+
+    public int getTequilaAmount() {
+        return tequila.getAmount();
+    }
+
+    public double getTequilaStrength() {
+        return tequila.getStrength();
+    }
 }

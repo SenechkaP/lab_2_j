@@ -47,16 +47,26 @@ public class Model {
         return Files.readAllLines(Paths.get("database.txt"));
     }
 
+    public void updateLines(List<String> lines) throws IOException {
+        FileOutputStream out = new FileOutputStream("database.txt", false);
+        OutputStreamWriter outputStream = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+
+        for (String line : lines) {
+            outputStream.write(line + "\n");
+        }
+        outputStream.close();
+    }
+
     public String addCocktail(BaseCocktail cocktail) throws IOException {
         if (cocktail == null) {
             return null;
         }
 
         FileOutputStream out = new FileOutputStream("database.txt", true);
-        OutputStreamWriter out2 = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+        OutputStreamWriter outputStream = new OutputStreamWriter(out, StandardCharsets.UTF_8);
         String str = id_to_add + ";" + cocktail.getClass().getSimpleName() + ";" + cocktail.getRecipe() + "\n";
-        out2.write(str);
-        out2.close();
+        outputStream.write(str);
+        outputStream.close();
         id_to_add += 1;
 
         return str;
