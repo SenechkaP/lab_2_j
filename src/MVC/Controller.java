@@ -319,7 +319,44 @@ public class Controller {
                     lines.set(id, cocktailStr);
                     try {
                         model.updateLines(lines);
-                        view.displayText("\n");
+                        view.displayText("Информация успешно обновлена\n\n");
+                    } catch (IOException e) {
+                        view.displayText("Не удалось записать изменения в файл\n\n");
+                    }
+
+                    break;
+                }
+                case 4: {
+                    view.displayText("Введите ID элемента, информацию о котором вы хотите удалить: ");
+
+                    int id;
+
+                    try {
+                        id = Integer.parseInt(view.getLine());
+                        if (id < 0 || id >= model.getSize()) {
+                            throw new IllegalArgumentException();
+                        }
+                    } catch (NumberFormatException e) {
+                        view.displayText("ID - целое число! Попробуйте ещё раз.\n\n");
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        view.displayText("Нет такого ID. Попробуйте сначала вывести все записи и посмотреть, какие ID доступны.\n\n");
+                        break;
+                    }
+
+                    if (id != lines.size() - 1) {
+                        for (int i = id + 1; i < lines.size(); i++) {
+                            String[] lineParts = lines.get(i).split(";");
+                            lineParts[0] = "" + (i - 1);
+                            String newLine = lineParts[0] + ";" + lineParts[1] + ";" + lineParts[2];
+                            lines.set(i, newLine);
+                        }
+                    }
+
+                    lines.remove(id);
+                    try {
+                        model.updateLines(lines);
+                        view.displayText("Информация успешно удалена\n\n");
                     } catch (IOException e) {
                         view.displayText("Не удалось записать изменения в файл\n\n");
                     }
