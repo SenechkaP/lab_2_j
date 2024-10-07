@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class View {
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public void close() {
         scanner.close();
@@ -40,6 +40,7 @@ public class View {
                             Добавить новую запись о коктейле......2
                             Обновить запись о коктейле............3
                             Удалить запись о коктейле.............4
+                            Включить режим отладки................5
                             """
             );
         } else if (Objects.equals(right, "root")) {

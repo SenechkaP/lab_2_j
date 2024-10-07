@@ -103,6 +103,6 @@ nb-configuration.xml
 .code-workspace
 
 
-msg_log.txt.*
+logs
 src/Test.java
 database.txt

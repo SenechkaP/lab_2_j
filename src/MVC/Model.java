@@ -47,7 +47,11 @@ public class Model {
         return Files.readAllLines(Paths.get("database.txt"));
     }
 
-    public void updateLines(List<String> lines) throws IOException {
+    public void updateLines(List<String> lines) throws IOException, NullPointerException{
+        if (lines == null) {
+            throw new NullPointerException();
+        }
+
         FileOutputStream out = new FileOutputStream("database.txt", false);
         OutputStreamWriter outputStream = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 

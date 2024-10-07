@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Main {
+public class Lab3 {
     static BaseCocktail generateFastCocktail() {
         return new FastCocktail(
                 new Ingredient("ice", 0, (int) (Math.random() * 100)),
@@ -31,7 +31,7 @@ public class Main {
 
         for (int size = 10; n < 5; n++, size *= 10) {
             listik = new MyArrayList();
-            ExcMsgLog log = new ExcMsgLog(n);
+            ExcMsgLog log = new ExcMsgLog("src/logs/ArrayList_log.txt." + n, false);
             log.writeFine("Start programm: " + LocalDateTime.now().format(formatter));
 
             for (int j = 0; j < size; j++) {
@@ -57,7 +57,7 @@ public class Main {
 
         for (int size = 10; n < 10; n++, size *= 10) {
             hashik = new MyHashMap();
-            ExcMsgLog log = new ExcMsgLog(n);
+            ExcMsgLog log = new ExcMsgLog("src/logs/HashMap_log.txt." + n, false);
             log.writeFine("Start programm: " + LocalDateTime.now().format(formatter));
 
             for (int j = 0; j < size; j++) {

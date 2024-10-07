@@ -3,16 +3,36 @@ package MVC;
 import cocktails.BaseCocktail;
 import cocktails.FancyCocktail;
 import cocktails.FastCocktail;
+import cocktails.Ingredient;
+import config.ConfigReader;
+import mylogging.ExcMsgLog;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Controller {
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
+    private ExcMsgLog log;
+    private ConfigReader configReader;
+    private boolean debugMode = false;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+    public Controller(Model model, View view) {
+        this.model = model;
+        this.view = view;
+        try {
+            this.log = new ExcMsgLog("src/logs/lab4_results", true);
+            this.configReader = new ConfigReader();
+        } catch (IOException e) {
+            view.displayText("Не удалось создать экземпляр объекта ExcMsgLog для записи информации в лог файл\n\n");
+        }
+    }
 
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -57,20 +77,67 @@ public class Controller {
         try {
             return model.readLines();
         } catch (IOException e) {
-            view.displayText("Что-то пошло не так...\n\n");
+            if (debugMode) {
+                log.writeSevere(LocalDateTime.now().format(formatter) + "Не удалось получить информацию из файла");
+            }
+            view.displayText("Не удалось получить информацию из файла\n\n");
             return null;
         }
     }
 
-    public Controller(Model model, View view) {
-        this.model = model;
-        this.view = view;
+    private void runAutotests() {
+        log.writeFine("Start autotests: " + LocalDateTime.now().format(formatter));
+
+        List<String> lines = List.of(
+                "0;FastCocktail;500 грамм ice (крепость = 0.0), 300 грамм vodka (крепость = 43.5)",
+                "1;FancyCocktail;100 грамм ice (крепость = 0.0), 200 грамм vodka (крепость = 34.2), 241 грамм juice (крепость = 0.0), 300 грамм tequila (крепость = 23.4)"
+        );
+
+        try {
+            lines = model.readLines();
+            log.writeInfo("Функция readLines отработала без исключений");
+            view.displayText("Функция readLines отработала без исключений\n");
+        } catch (IOException e) {
+            log.writeSevere("Функция readLines выбросила исключение IOException");
+            view.displayText("Функция readLines выбросила исключение IOException\n");
+        }
+
+        try {
+            model.addCocktail(new FancyCocktail(
+                    new Ingredient("ice", 0, 100),
+                    new Ingredient("vodka", 40.5, 100),
+                    new Ingredient("juice", 0, 100),
+                    new Ingredient("tequila", 40.5, 100)
+            ));
+            log.writeInfo("Функция addCocktail отработала без исключений");
+            view.displayText("Функция addCocktail отработала без исключений\n");
+        } catch (IOException e) {
+            log.writeSevere("Функция addCocktail выбросила исключение IOException");
+            view.displayText("Функция addCocktail выбросила исключение IOException\n");
+        }
+
+        try {
+            model.updateLines(lines);
+            log.writeInfo("Функция updateLines отработала без исключений");
+            view.displayText("Функция updateLines отработала без исключений\n");
+        } catch (IOException e) {
+            log.writeSevere("Функция updateLines выбросила исключение IOException");
+            view.displayText("Функция updateLines выбросила исключение IOException\n");
+        } catch (NullPointerException e) {
+            log.writeSevere("Функция updateLines выбросила исключение NullPointerException");
+            view.displayText("Функция updateLines выбросила исключение NullPointerException\n");
+        }
+
+        log.writeFine("Finish autotests: " + LocalDateTime.now().format(formatter));
     }
 
     public void run() {
         try {
             model.updateID();
         } catch (IOException e) {
+            if (debugMode) {
+                log.writeSevere(LocalDateTime.now().format(formatter) + " Не удалось обновить информацию о содержании файла");
+            }
             view.displayText("Не удалось обновить информацию о содержании файла.");
             return;
         }
@@ -79,13 +146,22 @@ public class Controller {
         try {
             user = getUser();
         } catch (IOException | ParseException e) {
-            view.displayText("Что-то пошло не так...\n\n");
+            if (debugMode) {
+                log.writeSevere(LocalDateTime.now().format(formatter) + " Не удалось найти пользователя");
+            }
+            view.displayText("Не удалось найти пользователя\n\n");
+            return;
         }
 
         checkPassword(user);
 
         view.displayGreeting((String) user.get("name"));
         view.displayText("\n");
+
+        if (Boolean.parseBoolean(configReader.getProperty("runautotests"))) {
+            runAutotests();
+            view.displayText("\n");
+        }
 
         boolean running = true;
 
@@ -97,7 +173,11 @@ public class Controller {
             try {
                 command = Integer.parseInt(view.getLine());
             } catch (NumberFormatException e) {
+                if (debugMode) {
+                    log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введён номер команды");
+                }
                 view.displayText("Номер команды - целое число! Попробуйте ещё раз.\n\n");
+                continue;
             }
 
             List<String> lines = getLines();
@@ -124,6 +204,9 @@ public class Controller {
                     try {
                         variant = Integer.parseInt(view.getLine());
                     } catch (NumberFormatException e) {
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введён номер коктейля");
+                        }
                         view.displayText("Номер варианта - целое число! Попробуйте ещё раз.\n\n");
                         break;
                     }
@@ -136,6 +219,9 @@ public class Controller {
                                 cocktail = view.inputBaseCocktail();
                                 break;
                             } catch (NumberFormatException e) {
+                                if (debugMode) {
+                                    log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введена информация о коктейле");
+                                }
                                 view.displayText("Число грамм - целое число! Попробуйте ещё раз.\n\n");
                                 shouldBreak = true;
                                 break;
@@ -145,6 +231,9 @@ public class Controller {
                                 cocktail = view.inputFastCocktail();
                                 break;
                             } catch (NumberFormatException e) {
+                                if (debugMode) {
+                                    log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введена информация о коктейле");
+                                }
                                 view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
                                 shouldBreak = true;
                                 break;
@@ -154,6 +243,9 @@ public class Controller {
                                 cocktail = view.inputFancyCocktail();
                                 break;
                             } catch (NumberFormatException e) {
+                                if (debugMode) {
+                                    log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введена информация о коктейле");
+                                }
                                 view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
                                 shouldBreak = true;
                                 break;
@@ -173,7 +265,10 @@ public class Controller {
                         added_str = model.addCocktail(cocktail);
                         lines.add(added_str);
                     } catch (IOException e) {
-                        view.displayText("Произошла ошибка, попробуйте ещё раз.\n\n");
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Не удалось добавить коктейль");
+                        }
+                        view.displayText("Не удалось добавить коктейль.\n\n");
                     }
 
                     if (added_str != null) {
@@ -193,9 +288,15 @@ public class Controller {
                             throw new IllegalArgumentException();
                         }
                     } catch (NumberFormatException e) {
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введён ID");
+                        }
                         view.displayText("ID - целое число! Попробуйте ещё раз.\n\n");
                         break;
                     } catch (IllegalArgumentException e) {
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Нет такого ID");
+                        }
                         view.displayText("Нет такого ID. Попробуйте сначала вывести все записи и посмотреть, какие ID доступны.\n\n");
                         break;
                     }
@@ -223,6 +324,9 @@ public class Controller {
                                 cocktailStr = id + ";" + cocktail.getClass().getSimpleName() + ";" + cocktail.getRecipe();
                                 break;
                             } catch (NumberFormatException e) {
+                                if (debugMode) {
+                                    log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введена информация о коктейле");
+                                }
                                 view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
                                 break;
                             }
@@ -256,6 +360,9 @@ public class Controller {
 
                                 break;
                             } catch (NumberFormatException e) {
+                                if (debugMode) {
+                                    log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введена информация о коктейле");
+                                }
                                 view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
                                 break;
                             }
@@ -308,6 +415,9 @@ public class Controller {
 
                                 break;
                             } catch (NumberFormatException e) {
+                                if (debugMode) {
+                                    log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введена информация о коктейле");
+                                }
                                 view.displayText("Что-то было введено неверно. Попробуйте ещё раз.\n\n");
                                 break;
                             }
@@ -321,6 +431,9 @@ public class Controller {
                         model.updateLines(lines);
                         view.displayText("Информация успешно обновлена\n\n");
                     } catch (IOException e) {
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Не удалось записать изменения в файл");
+                        }
                         view.displayText("Не удалось записать изменения в файл\n\n");
                     }
 
@@ -337,9 +450,15 @@ public class Controller {
                             throw new IllegalArgumentException();
                         }
                     } catch (NumberFormatException e) {
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Некорректно введён ID");
+                        }
                         view.displayText("ID - целое число! Попробуйте ещё раз.\n\n");
                         break;
                     } catch (IllegalArgumentException e) {
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Нет такого ID");
+                        }
                         view.displayText("Нет такого ID. Попробуйте сначала вывести все записи и посмотреть, какие ID доступны.\n\n");
                         break;
                     }
@@ -358,9 +477,27 @@ public class Controller {
                         model.updateLines(lines);
                         view.displayText("Информация успешно удалена\n\n");
                     } catch (IOException e) {
+                        if (debugMode) {
+                            log.writeSevere(LocalDateTime.now().format(formatter) + " Не удалось записать изменения в файл");
+                        }
                         view.displayText("Не удалось записать изменения в файл\n\n");
                     }
 
+                    break;
+                }
+                case 5: {
+                    if (!debugMode) {
+                        configReader.setProperty("debugmode", "true");
+                        debugMode = true;
+                        view.displayText("Режим отладки включен\n\n");
+                    }
+                    break;
+                }
+                case 6: {
+                    if (user.get("right") != "root") {
+                        continue;
+                    }
+                    runAutotests();
                     break;
                 }
                 default:

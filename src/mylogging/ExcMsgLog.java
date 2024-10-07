@@ -9,12 +9,11 @@ public class ExcMsgLog {
     private static Logger logger;
     private int exception_count = 0;
 
-    public ExcMsgLog(int n) throws IOException {
+    public ExcMsgLog(String logFilePath, boolean append) throws IOException {
         LogManager.getLogManager().readConfiguration(ExcMsgLog.class.getResourceAsStream("logging.properties"));
         logger = Logger.getLogger(ExcMsgLog.class.getName());
 
-        FileHandler fileHandler = new FileHandler("src/mylogging/msg_log.txt." + n, true);
-//        fileHandler.setFormatter(new SimpleFormatter());
+        FileHandler fileHandler = new FileHandler(logFilePath, append);
         logger.addHandler(fileHandler);
     }
 
