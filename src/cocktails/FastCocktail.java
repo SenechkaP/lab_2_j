@@ -25,6 +25,29 @@ public class FastCocktail extends BaseCocktail {
         setStrength(newStrength);
     }
 
+    @Override
+    public void setIceAmount(int amount) {
+        String recipe = getRecipe();
+        super.setIceAmount(amount);
+        setTotalAmount(getTotalAmount() + vodka.getAmount());
+        String[] recipeParts = recipe.split(",");
+        String[] iceParts = recipeParts[0].split(" ");
+        iceParts[0] = "" + amount;
+
+        StringBuilder newRecipe = new StringBuilder(iceParts[0]);
+
+        for (int i = 1; i < iceParts.length; i++) {
+            newRecipe.append(" ").append(iceParts[i]);
+        }
+
+        for (int i = 1; i < recipeParts.length; i++) {
+            newRecipe.append(",").append(recipeParts[i]);
+        }
+
+        setRecipe(newRecipe.toString());
+        calculateStrength();
+    }
+
     public int getVodkaAmount() {
         return vodka.getAmount();
     }
@@ -37,10 +60,14 @@ public class FastCocktail extends BaseCocktail {
         String[] vodkaParts = recipeParts[1].split(" ");
         vodkaParts[1] = "" + amount;
 
-        StringBuilder newRecipe = new StringBuilder(recipeParts[0]);
-        newRecipe.append(",");
+        StringBuilder newRecipe = new StringBuilder(recipeParts[0] + ",");
+
         for (int i = 1; i < vodkaParts.length; i++) {
             newRecipe.append(" ").append(vodkaParts[i]);
+        }
+
+        for (int i = 2; i < recipeParts.length; i++) {
+            newRecipe.append(",").append(recipeParts[i]);
         }
 
         setRecipe(newRecipe.toString());
@@ -58,10 +85,14 @@ public class FastCocktail extends BaseCocktail {
         String[] vodkaParts = recipeParts[1].split(" ");
         vodkaParts[6] = strength + ")";
 
-        StringBuilder newRecipe = new StringBuilder(recipeParts[0]);
-        newRecipe.append(",");
+        StringBuilder newRecipe = new StringBuilder(recipeParts[0] + ",");
+
         for (int i = 1; i < vodkaParts.length; i++) {
             newRecipe.append(" ").append(vodkaParts[i]);
+        }
+
+        for (int i = 2; i < recipeParts.length; i++) {
+            newRecipe.append(",").append(recipeParts[i]);
         }
 
         setRecipe(newRecipe.toString());

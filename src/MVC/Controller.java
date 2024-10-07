@@ -176,7 +176,7 @@ public class Controller {
                         view.displayText("Произошла ошибка, попробуйте ещё раз.\n\n");
                     }
 
-                    if (added_str == null) {
+                    if (added_str != null) {
                         view.displayText("Запись о коктейле успешно добавлена.\n\n");
                     }
 
@@ -235,7 +235,6 @@ public class Controller {
                                  * ingredients[1].split(" "):
                                  * ["", "105", "грамм", "vodka", "(крепость", "=", "34.5)"]
                                  * */
-
                                 FastCocktail fastCocktail = view.inputFastCocktail();
                                 if (fastCocktail.getIceAmount() < 0) {
                                     int newIceAmount = Integer.parseInt(ingredients[0].split(" ")[0]);
@@ -290,11 +289,11 @@ public class Controller {
                                     fancyCocktail.setVodkaStrength(newVodkaStrength);
                                 }
                                 if (fancyCocktail.getJuiceAmount() < 0) {
-                                    int newJuiceAmount = Integer.parseInt(ingredients[2].split(" ")[2]);
+                                    int newJuiceAmount = Integer.parseInt(ingredients[2].split(" ")[1]);
                                     fancyCocktail.setJuiceAmount(newJuiceAmount);
                                 }
                                 if (fancyCocktail.getTequilaAmount() < 0) {
-                                    int newTequilaAmount = Integer.parseInt(ingredients[3].split(" ")[2]);
+                                    int newTequilaAmount = Integer.parseInt(ingredients[3].split(" ")[1]);
                                     fancyCocktail.setTequilaAmount(newTequilaAmount);
                                 }
                                 if (fancyCocktail.getTequilaStrength() < 0) {
@@ -320,6 +319,7 @@ public class Controller {
                     lines.set(id, cocktailStr);
                     try {
                         model.updateLines(lines);
+                        view.displayText("\n");
                     } catch (IOException e) {
                         view.displayText("Не удалось записать изменения в файл\n\n");
                     }

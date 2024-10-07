@@ -36,7 +36,24 @@ public class FancyCocktail extends FastCocktail {
     public void setJuiceAmount(int amount) {
         juice.setAmount(amount);
         setTotalAmount(getTotalAmount() + amount);
-        // TODO: write normal updating algorithm for new recipe for FancyCocktail
+
+        String recipe = getRecipe();
+        String[] recipeParts = recipe.split(",");
+        String[] juiceParts = recipeParts[2].split(" ");
+        juiceParts[1] = "" + amount;
+
+        StringBuilder newRecipe = new StringBuilder(recipeParts[0] + "," + recipeParts[1] + ",");
+
+        for (int i = 1; i < juiceParts.length; i++) {
+            newRecipe.append(" ").append(juiceParts[i]);
+        }
+
+        for (int i = 3; i < recipeParts.length; i++) {
+            newRecipe.append(",").append(recipeParts[i]);
+        }
+
+        setRecipe(newRecipe.toString());
+
         calculateStrength();
     }
 
@@ -47,7 +64,20 @@ public class FancyCocktail extends FastCocktail {
     public void setTequilaAmount(int amount) {
         tequila.setAmount(amount);
         setTotalAmount(getTotalAmount() + amount);
-        // TODO: write normal updating algorithm for new recipe for FancyCocktail
+
+        String recipe = getRecipe();
+        String[] recipeParts = recipe.split(",");
+        String[] tequilaParts = recipeParts[3].split(" ");
+        tequilaParts[1] = "" + amount;
+
+        StringBuilder newRecipe = new StringBuilder(recipeParts[0] + "," + recipeParts[1] + "," + recipeParts[2] + ",");
+
+        for (int i = 1; i < tequilaParts.length; i++) {
+            newRecipe.append(" ").append(tequilaParts[i]);
+        }
+
+        setRecipe(newRecipe.toString());
+
         calculateStrength();
     }
 
@@ -57,7 +87,19 @@ public class FancyCocktail extends FastCocktail {
 
     public void setTequilaStrength(double strength) {
         tequila.setStrength(strength);
-        // TODO: write normal updating algorithm for new recipe for FancyCocktail
+
+        String recipe = getRecipe();
+        String[] recipeParts = recipe.split(",");
+        String[] tequilaParts = recipeParts[3].split(" ");
+        tequilaParts[6] = strength + ")";
+
+        StringBuilder newRecipe = new StringBuilder(recipeParts[0] + "," + recipeParts[1] + "," + recipeParts[2] + ",");
+
+        for (int i = 1; i < tequilaParts.length; i++) {
+            newRecipe.append(" ").append(tequilaParts[i]);
+        }
+
+        setRecipe(newRecipe.toString());
         calculateStrength();
     }
 }
