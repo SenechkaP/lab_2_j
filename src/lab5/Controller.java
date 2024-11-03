@@ -33,17 +33,17 @@ public class Controller {
         }
 
 //         for hashMapRes
-        for (int i = 0; i < 4; i++) {
-            int[] xValues = new int[5];
-            int[] yValues = new int[5];
-
-            for (int j = 0, n = 10; j < 5; j++, n *= 10) {
-                xValues[j] = n;
-                yValues[j] = hashMapRes.get(n)[i];
-            }
-
-            View view = new View(xValues, yValues, "HashMap  " + graphTitlesHash[i]);
-            view.setVisible(true);
-        }
+//        for (int i = 0; i < 4; i++) {
+//            int[] xValues = new int[5];
+//            int[] yValues = new int[5];
+//
+//            for (int j = 0, n = 10; j < 5; j++, n *= 10) {
+//                xValues[j] = n;
+//                yValues[j] = hashMapRes.get(n)[i];
+//            }
+//
+//            View view = new View(xValues, yValues, "HashMap  " + graphTitlesHash[i]);
+//            view.setVisible(true);
+//        }
     }
 }

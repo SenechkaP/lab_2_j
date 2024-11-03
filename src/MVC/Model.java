@@ -11,6 +11,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +48,7 @@ public class Model {
         return Files.readAllLines(Paths.get("database.txt"));
     }
 
-    public void updateLines(List<String> lines) throws IOException, NullPointerException{
+    public void updateLines(List<String> lines) throws IOException, NullPointerException {
         if (lines == null) {
             throw new NullPointerException();
         }
